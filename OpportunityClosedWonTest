@@ -1,0 +1,17 @@
+@isTest
+public class OpportunityClosedWonTest {
+    @isTest
+    static void testClosedWonTrigger() {
+        Opportunity testOpp = new Opportunity(
+            Name = 'Test Opportunity',
+            StageName = 'Prospecting',
+            CloseDate = Date.today(),
+            Amount = 10000
+        );
+        insert testOpp;
+
+        testOpp.StageName = 'Closed Won';
+        update testOpp;
+
+    }
+}
