@@ -1,0 +1,25 @@
+// Enhanced Mock class for the HTTP response
+public class MockHttpResponseGenerator implements HttpCalloutMock {
+    public HTTPResponse respond(HTTPRequest req) {
+        // Validate HTTP method
+        System.assertEquals(req.getMethod(), 'POST', 'Expected HTTP method to be POST');
+        
+        // Validate endpoint
+        System.assertEquals(req.getEndpoint(), 'https://hooks.slack.com/services/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', 'Incorrect Slack Webhook URL');
+        
+        // Validate headers
+        System.assertEquals(req.getHeader('Content-Type'), 'application/json', 'Expected Content-Type header to be application/json');
+        
+        // Validate body content
+        Map<String, Object> requestBody = (Map<String, Object>)JSON.deserializeUntyped(req.getBody());
+        System.assertEquals(requestBody.get('channel'), '#closed-won-deals', 'Slack channel is incorrect');
+        System.assertEquals(requestBody.get('text'), ':tada: *Opportunity Closed Won!* :confetti_ball:', 'Slack message text is incorrect');
+        
+        // Simulate a successful response
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Content-Type', 'application/json');
+        response.setBody('{"ok": true, "message": "Notification sent successfully"}');
+        response.setStatusCode(200);
+        return response;
+    }
+}
