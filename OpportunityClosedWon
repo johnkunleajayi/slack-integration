@@ -1,0 +1,16 @@
+trigger OpportunityClosedWon on Opportunity (after update) {
+    List<Opportunity> closedWonOpportunities = new List<Opportunity>();
+    
+    for (Opportunity opp : Trigger.new) {
+        // Check if the stage has changed to "Closed Won"
+        Opportunity oldOpp = Trigger.oldMap.get(opp.Id);
+        if (opp.StageName == 'Closed Won' && oldOpp.StageName != 'Closed Won') {
+            closedWonOpportunities.add(opp);
+        }
+    }
+    
+    // Make a single call for each opportunity (as the Slack notification method is @future)
+    for (Opportunity closedWonOpp : closedWonOpportunities) {
+        SlackNotification.sendClosedWonNotification(closedWonOpp.Name, closedWonOpp.Amount);
+    }
+}
