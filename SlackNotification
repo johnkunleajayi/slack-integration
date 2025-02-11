@@ -1,0 +1,37 @@
+public class SlackNotification {
+    @future(callout=true)
+    public static void sendClosedWonNotification(String opportunityName, Decimal amount) {
+        String slackWebhookURL = 'https://hooks.slack.com/services/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';
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(slackWebhookURL);
+        request.setMethod('POST');
+        
+        // Construct the Slack message
+        Map<String, Object> slackMessage = new Map<String, Object>();
+        slackMessage.put('channel', '#sales-notifications'); // Slack channel name
+        slackMessage.put('text', ':tada: *Opportunity Closed Won!* :confetti_ball:');
+        slackMessage.put('attachments', new List<Map<String, Object>>{
+            new Map<String, Object> {
+                'color' => '#36a64f',
+                'fields' => new List<Map<String, Object>>{
+                    new Map<String, Object>{'title' => 'Opportunity Name', 'value' => opportunityName, 'short' => true},
+                    new Map<String, Object>{'title' => 'Amount', 'value' => '$' + amount.format(), 'short' => true}
+                }
+            }
+        });
+
+        // Debug log the payload being sent
+        System.debug('Payload being sent to Slack: ' + JSON.serialize(slackMessage));
+        
+        request.setBody(JSON.serialize(slackMessage));
+        request.setHeader('Content-Type', 'application/json');
+        
+        try {
+            HttpResponse response = http.send(request);
+            System.debug('Slack Response: ' + response.getBody());
+        } catch (Exception e) {
+            System.debug('Error sending to Slack: ' + e.getMessage());
+        }
+    }
+}
