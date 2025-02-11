@@ -1,0 +1,20 @@
+@isTest
+public class SlackNotificationTest {
+    @isTest
+    static void testSendClosedWonNotification() {
+        // Set up the enhanced mock HTTP response
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+        
+        // Define test data
+        String testOppName = 'Test Opportunity';
+        Decimal testAmount = 50000;
+        
+        // Test the method
+        Test.startTest();
+        SlackNotification.sendClosedWonNotification(testOppName, testAmount);
+        Test.stopTest();
+        
+        // No assertions here because the validations are in the mock
+        // If something fails (e.g., incorrect endpoint or body), the mock will throw an assertion error
+    }
+}
